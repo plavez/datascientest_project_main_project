@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp2
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: app2
+  source:
+    path: "HelmCharts/MyChart2"
+    repoURL: "https://github.com/plavez/argocd.git"
+    targetRevision: main
+    helm:
+      valueFiles:
+        - values_prod.yaml
+      parameters:
+        - name: "container.image"
+          value: nginx:1.27-alpine
+
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    owner: VladGolic
+spec:
+  selector:
+    project: {{ .Release.Name }}    # Selecting PODS with those Labels
+  type: {{ .Values.service.type }} # ClusterIP, NodePort, LoadBalancer
+  ports:
+    - name      : {{ .Release.Name }}-listener
+      protocol  : TCP
+      port      : {{.Values.service.port}}  # Port on Load Balancer
+      targetPort: {{.Values.service.targetPort}}  # Port on POD

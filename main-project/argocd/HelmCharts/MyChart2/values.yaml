@@ -1,0 +1,12 @@
+# Default Values for my Helm Chart
+
+container:
+  image: nginx:1.27-alpine
+
+replicaCount: 1
+
+service:
+  type: NodePort
+  port: 80 # Default service port
+  targetPort: 80 # Default target port for the container
+  nodePort: 30080 # Default NodePort value
