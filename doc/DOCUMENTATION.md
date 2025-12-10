@@ -1,4 +1,4 @@
-### Multi-Cluster GitOps with Argo CD, Helm and Terraform
+# Multi-Cluster GitOps with Argo CD, Helm and Terraform
 1. ## Overview
 
     This project deploys a GitOps setup on two Kubernetes clusters (dev & prod) running on AWS EC2:
