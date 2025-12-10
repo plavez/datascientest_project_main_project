@@ -60,7 +60,7 @@
     If your clusters are already created and you already have kubeconfig files
     ~/.kube/dev-k3s.yaml and ~/.kube/prod-k3s.yaml, you can skip to Stage 2.
 
-   1.  ### Terraform Structure (clusters)
+   1.  ## Terraform Structure (clusters)
        The infrastructure for k3s clusters is defined in a separate Terraform project (for example k3s-aws), which:
 
         creates:
@@ -77,7 +77,7 @@
 
                 ~/.kube/prod-k3s.yaml
 
-    2.  ### Cluster Provisioning Commands
+    2.  ## Cluster Provisioning Commands
        **From the cluster Terraform directory (e.g. ~/k3s-aws):**
        ```
         terraform init
@@ -86,7 +86,7 @@
        ```
        Wait until Terraform finishes.
 
-    3.  ### Verifying Clusters
+    3.  ## Verifying Clusters
         Export kubeconfig and check nodes.
 
         **Dev cluster**
@@ -120,7 +120,7 @@
         └── argocd.yaml          # Argo CD values (HA, autoscaling, etc.)
 
    ```
-    1. ### Module terraform_argocd_eks
+    1. ## Module terraform_argocd_eks
 
        This module:
 
@@ -154,7 +154,7 @@
        ```
        (Your actual code is adapted for k3s using kubeconfig.)
 
-    2. ### deploy_argocd.tf – Argo CD for dev and prod
+    2. ## deploy_argocd.tf – Argo CD for dev and prod
 
        **deploy_argocd.tf defines two module instances:**
        ```
@@ -171,7 +171,7 @@
         }
        ```
 
-    3. ### Argo CD Installation Commands
+    3. ## Argo CD Installation Commands
        **From ~/datascientest-main-project/main-project:**
        ```
        terraform init
@@ -187,7 +187,7 @@
 
        install Argo CD via Helm into dev and prod clusters
 
-    4. ###  Verify Argo CD Pods
+    4. ##  Verify Argo CD Pods
        **Dev cluster**
        ```
        export KUBECONFIG=~/.kube/dev-k3s.yaml
@@ -196,7 +196,7 @@
        ```
        Pods should also be in Running state.
 
-    5. ### Accessing Argo CD UI
+    5. ## Accessing Argo CD UI
        For local access you can use port-forwarding from your workstation.
 
        **Example (dev cluster):**
@@ -216,7 +216,7 @@
 
 5. ## Stage 3 – Deploying Applications via Argo CD (App-of-Apps)
 
-    1. ### Git Repository Structure
+    1. ## Git Repository Structure
        All application manifests and Helm charts are stored in GitHub repo
        https://github.com/plavez/argocd.
        **Structure:**
@@ -251,7 +251,7 @@
 
        HelmCharts/ – Helm charts used by these applications
 
-    2. ### Example: Helm values (values_dev.yaml)
+    2. ## Example: Helm values (values_dev.yaml)
        ```
        # Dev Override Values for my Helm Chart
 
@@ -269,7 +269,7 @@
        ```
 
 
-    3. ### Example: app1.yaml (dev)
+    3. ## Example: app1.yaml (dev)
 
       ```
         apiVersion: argoproj.io/v1alpha1
@@ -305,7 +305,7 @@
       app2.yaml is identical except for name, namespace and chart path (MyChart2).
 
 
-    4. ### Root Application in Git (dev/applications/root.yaml)
+    4. ## Root Application in Git (dev/applications/root.yaml)
        ```
        apiVersion: argoproj.io/v1alpha1
         kind: Application
