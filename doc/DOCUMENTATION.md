@@ -266,7 +266,9 @@
         targetPort: 80
         nodePort: 30080
 
-      ```
+       ```
+
+
     3. ### Example: app1.yaml (dev)
 
       ```
@@ -301,6 +303,7 @@
       ```
 
       app2.yaml is identical except for name, namespace and chart path (MyChart2).
+
 
     4. ### Root Application in Git (dev/applications/root.yaml)
        ```
