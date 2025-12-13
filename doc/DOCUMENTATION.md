@@ -1,27 +1,28 @@
 # Multi-Cluster GitOps with Argo CD, Helm and Terraform
-1. ## Overview
+
+    ## Overview
 
     This project deploys a GitOps setup on two Kubernetes clusters (dev & prod) running on AWS EC2:
 
-    k3s clusters (dev and prod) on EC2
+        - k3s clusters (dev and prod) on EC2
 
-    Argo CD installed via Terraform + Helm
+        - Argo CD installed via Terraform + Helm
 
-    Applications deployed via Argo CD Applications using the App-of-Apps (Root Application) pattern
+        - Applications deployed via Argo CD Applications using the App-of-Apps (Root Application) pattern
 
-    All manifests and Helm charts stored in a Git repository (plavez/argocd)
+        - All manifests and Helm charts stored in a Git repository (plavez/argocd)
 
     Deployment is done in two stages:
 
-    Install Argo CD into both clusters
+        1. Install Argo CD into both clusters
 
-    Create Root Applications which instruct Argo CD to deploy all other apps from Git
+        2. Create Root Applications which instruct Argo CD to deploy all other apps from Git
 
     The sections below describe all steps in detail.
 
 ---
 
-2. ## Prerequisites
+## Prerequisites
 
     Before starting, ensure you have:
 
@@ -46,16 +47,18 @@
     prod cluster
 
     **Throughout the documentation the working directory is:**
-    ```
-    ~/datascientest-main-project/main-project
 
 
-    ```
+     ```
+
+      ~/datascientest-main-project/main-project
+
+     ```
     You can adapt it if your path is different.
 
     ---
 
-3. ## Stage 1 – Provisioning k3s Clusters on AWS EC2
+## Stage 1 – Provisioning k3s Clusters on AWS EC2
 
     If your clusters are already created and you already have kubeconfig files
     ~/.kube/dev-k3s.yaml and ~/.kube/prod-k3s.yaml, you can skip to Stage 2.
@@ -107,7 +110,7 @@
 
        Once both clusters are reachable, proceed to Argo CD installation.
 
-4. ## Stage 2 – Installing Argo CD with Terraform + Helm
+## Stage 2 – Installing Argo CD with Terraform + Helm
 
    **All Argo CD related Terraform code is located in the main project directory:**
    ```
@@ -214,7 +217,7 @@
 
        (You can repeat same procedure for the prod cluster if needed.)
 
-5. ## Stage 3 – Deploying Applications via Argo CD (App-of-Apps)
+## Stage 3 – Deploying Applications via Argo CD (App-of-Apps)
 
     1. Git Repository Structure
        All application manifests and Helm charts are stored in GitHub repo
@@ -448,7 +451,7 @@
 
        All of them should be in state Healthy and Synced.
 
-6. ## Destroying the Environment
+## Destroying the Environment
 
     1. Destroy Only Applications and Argo CD
        **From main project directory:**
@@ -482,7 +485,7 @@
        ```
        This will delete all EC2 instances and therefore remove both k3s clusters completely.
 
-7. ## Summary
+## Summary
 
    This documentation describes:
 
@@ -497,16 +500,3 @@
    Child Applications managed by Argo CD from a Git repository
 
    How to verify and how to properly destroy all resources
-
-
-
-
-
-
-
-
-
-
-
-
-
