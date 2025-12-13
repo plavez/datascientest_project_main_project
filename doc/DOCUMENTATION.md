@@ -60,7 +60,7 @@
     If your clusters are already created and you already have kubeconfig files
     ~/.kube/dev-k3s.yaml and ~/.kube/prod-k3s.yaml, you can skip to Stage 2.
 
-   1.  Terraform Structure (clusters)
+   1.  **Terraform Structure (clusters)**
        The infrastructure for k3s clusters is defined in a separate Terraform project (for example k3s-aws), which:
 
         creates:
