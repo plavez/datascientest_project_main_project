@@ -26,11 +26,11 @@ Before starting, ensure you have:
   (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, correct region)
 
 - A Linux shell (or WSL) with the following tools installed:
-  1. Terraform (v1.x)
-  2. kubectl
-  3. Helm
-  4. Git
-  5. SSH access to GitHub (or HTTPS access if HTTPS URLs are used)
+1. Terraform (v1.x)
+2. kubectl
+3. Helm
+4. Git
+5. SSH access to GitHub (or HTTPS access if HTTPS URLs are used)
 
 - Two k3s clusters will be created as part of this project:
   - dev cluster
