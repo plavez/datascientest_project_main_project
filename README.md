@@ -7,7 +7,7 @@ This project deploys a GitOps setup on two Kubernetes clusters (dev & prod) runn
 - k3s clusters (dev and prod) on EC2
 - Argo CD installed via Terraform + Helm
 - Applications deployed via Argo CD Applications using the App-of-Apps (Root Application) pattern
-- All manifests and Helm charts stored in a Git repository (`plavez/argocd`)
+- All manifests and Helm charts stored in a Git repository (`https://github.com/plavez/datascientest_project_main_project/tree/main/main-project/argocd`)
 
 Deployment is done in two stages:
 
