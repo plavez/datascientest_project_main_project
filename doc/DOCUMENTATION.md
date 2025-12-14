@@ -103,6 +103,8 @@ Again, 3 Ready nodes should be displayed.
 
 Once both clusters are reachable, proceed to Argo CD installation.
 
+---
+
 ## Stage 2 – Installing Argo CD with Terraform + Helm
 
 **All Argo CD related Terraform code is located in the main project directory:**
@@ -210,6 +212,8 @@ https://localhost:8080
 Use user admin and this password to log in.
 
 (You can repeat same procedure for the prod cluster if needed.)
+
+---
 
 ## Stage 3 – Deploying Applications via Argo CD (App-of-Apps)
 
@@ -449,6 +453,8 @@ myapp2
 
 All of them should be in state Healthy and Synced.
 
+---
+
 ## Destroying the Environment
 
 1. Destroy Only Applications and Argo CD
@@ -482,6 +488,8 @@ terraform destroy
 
 ```
 This will delete all EC2 instances and therefore remove both k3s clusters completely.
+
+---
 
 ## Summary
 
