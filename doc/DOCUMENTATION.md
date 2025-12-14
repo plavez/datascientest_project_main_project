@@ -22,31 +22,24 @@ The sections below describe all steps in detail.
 
 Before starting, ensure you have:
 
-- AWS account and credentials configured (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, correct region)
+- An AWS account with credentials configured
+  (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, correct region)
 
-A Linux shell (or WSL) with:
+- A Linux shell (or WSL) with the following tools installed:
+  1. Terraform (v1.x)
+  2. kubectl
+  3. Helm
+  4. Git
+  5. SSH access to GitHub (or HTTPS access if HTTPS URLs are used)
 
-1. terraform (v1.x)
+- Two k3s clusters will be created as part of this project:
+  - dev cluster
+  - prod cluster
 
-2. kubectl
-
-3. helm
-
-4. git
-
-5. SSH access to GitHub (or HTTPS access if you use HTTPS URLs)
-
-6. Two k3s clusters will be created:
-
-7. dev cluster
-
-8. prod cluster
-
-**Throughout the documentation the working directory is:**
+**Throughout the documentation, the working directory is:**
 
 ```
 ~/datascientest-main-project/main-project
-
 ```
 You can adapt it if your path is different.
 
