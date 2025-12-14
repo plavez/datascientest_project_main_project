@@ -48,27 +48,27 @@ You can adapt it if your path is different.
 ## Stage 1 – Provisioning k3s Clusters on AWS EC2
 
 If your clusters are already created and you already have kubeconfig files
-~/.kube/dev-k3s.yaml and ~/.kube/prod-k3s.yaml, you can skip to Stage 2.
+`~/.kube/dev-k3s.yaml` and `~/.kube/prod-k3s.yaml`, you can skip to Stage 2.
 
-1.  **Terraform Structure (clusters)**
-The infrastructure for k3s clusters is defined in a separate Terraform project (for example k3s-aws), which:
+### 1. Terraform Structure (clusters)
 
-creates:
+The infrastructure for the k3s clusters is defined in a separate Terraform project
+(for example `k3s-aws`).
 
-1 master + 2 worker nodes for dev
+This project performs the following actions:
 
-1 master + 2 worker nodes for prod
+- creates two Kubernetes clusters:
+  - **dev cluster**: 1 master + 2 worker nodes
+  - **prod cluster**: 1 master + 2 worker nodes
+- installs **k3s** on each node
+- generates kubeconfig files:
+  - `~/.kube/dev-k3s.yaml`
+  - `~/.kube/prod-k3s.yaml`
 
-installs k3s on each node
+### 2. Cluster Provisioning Commands
 
-generates kubeconfig files:
+From the cluster Terraform directory (e.g. `~/k3s-aws`), run:
 
-~/.kube/dev-k3s.yaml
-
-~/.kube/prod-k3s.yaml
-
-2. Cluster Provisioning Commands
-**From the cluster Terraform directory (e.g. ~/k3s-aws):**
 ```
 terraform init
 terraform plan
