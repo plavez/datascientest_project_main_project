@@ -20,39 +20,37 @@ The sections below describe all steps in detail.
 
 ## Prerequisites
 
-    Before starting, ensure you have:
+Before starting, ensure you have:
 
-    AWS account and credentials configured (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, correct region)
+AWS account and credentials configured (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, correct region)
 
-    A Linux shell (or WSL) with:
+A Linux shell (or WSL) with:
 
-    terraform (v1.x)
+terraform (v1.x)
 
-    kubectl
+kubectl
 
-    helm
+helm
 
-    git
+git
 
-    SSH access to GitHub (or HTTPS access if you use HTTPS URLs)
+SSH access to GitHub (or HTTPS access if you use HTTPS URLs)
 
-    Two k3s clusters will be created:
+Two k3s clusters will be created:
 
-    dev cluster
+dev cluster
 
-    prod cluster
+prod cluster
 
-    **Throughout the documentation the working directory is:**
+**Throughout the documentation the working directory is:**
 
+```
+~/datascientest-main-project/main-project
 
-     ```
+```
+You can adapt it if your path is different.
 
-      ~/datascientest-main-project/main-project
-
-     ```
-    You can adapt it if your path is different.
-
-    ---
+---
 
 ## Stage 1 – Provisioning k3s Clusters on AWS EC2
 
