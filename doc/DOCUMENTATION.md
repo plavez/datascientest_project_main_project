@@ -76,7 +76,7 @@ terraform apply
 ```
 Wait until Terraform finishes.
 
-3.  Verifying Clusters
+### 3.  Verifying Clusters
 Export kubeconfig and check nodes.
 
 **Dev cluster**
@@ -111,17 +111,17 @@ main-project/
     └── argocd.yaml          # Argo CD values (HA, autoscaling, etc.)
 
 ```
-1. Module terraform_argocd_eks
+### 1. Module terraform_argocd_eks
 
 This module:
 
-connects to a target k3s cluster via kubeconfig
+- connects to a target k3s cluster via kubeconfig
 
-configures the helm provider
+- configures the helm provider
 
-installs the official Argo CD Helm chart (argo-cd) into namespace argocd
+- installs the official Argo CD Helm chart (argo-cd) into namespace argocd
 
-applies additional configuration from argocd.yaml (HA, autoscaling, health checks)
+- applies additional configuration from argocd.yaml (HA, autoscaling, health checks)
 
 **Key parts:**
 ```
@@ -145,9 +145,9 @@ data "aws_eks_cluster" "this" { ... }          # in your case: equivalent config
 ```
 (Your actual code is adapted for k3s using kubeconfig.)
 
-2. deploy_argocd.tf – Argo CD for dev and prod
+### 2. deploy_argocd.tf – Argo CD for dev and prod
 
-**deploy_argocd.tf defines two module instances:**
+**The file deploy_argocd.tf defines two module instances:**
 ```
 module "argocd_dev" {
   source          = "./terraform_argocd_eks"
@@ -162,7 +162,7 @@ module "argocd_prod" {
     }
 ```
 
-3. Argo CD Installation Commands
+### 3. Argo CD Installation Commands
 **From ~/datascientest-main-project/main-project:**
 ```
 terraform init
@@ -172,22 +172,22 @@ terraform apply -target=module.argocd_dev -target=module.argocd_prod
 ```
 Terraform will:
 
-connect to both clusters
+- connect to both clusters
 
-create namespace argocd
+- create namespace argocd
 
-install Argo CD via Helm into dev and prod clusters
+- install Argo CD via Helm into dev and prod clusters
 
-4. Verify Argo CD Pods
+### 4. Verify Argo CD Pods
 **Dev cluster**
 ```
 export KUBECONFIG=~/.kube/dev-k3s.yaml
 kubectl get pods -n argocd
 
 ```
-Pods should also be in Running state.
+All Pods should also be in Running state.
 
-5. Accessing Argo CD UI
+### 5. Accessing Argo CD UI
 
 For local access you can use port-forwarding from your workstation.
 
@@ -202,18 +202,18 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 https://localhost:8080
 
 ```
-Use user admin and this password to log in.
+Log in using the admin user and the initial Argo CD admin password.
 
-(You can repeat same procedure for the prod cluster if needed.)
+(The same procedure can be repeated for the prod cluster if required.)
 
 ---
 
 ## Stage 3 – Deploying Applications via Argo CD (App-of-Apps)
 
-1. Git Repository Structure
+### 1. Git Repository Structure
 All application manifests and Helm charts are stored in GitHub repo
-https://github.com/plavez/argocd.
-**Structure:**
+https://github.com/plavez/datascientest_project_main_project/tree/main/main-project/argocd
+**Repository structure**
 ```
     argocd/
     ├── dev/
@@ -239,13 +239,14 @@ https://github.com/plavez/argocd.
             └── values_dev.yaml
 ```
 
-dev/applications – Argo CD Application resources for dev
+- dev/applications – Argo CD Application resources for the dev cluster
 
-prod/applications – Argo CD Application resources for prod
+- prod/applications – Argo CD Application resources for the prod cluster
 
-HelmCharts/ – Helm charts used by these applications
+- HelmCharts/ – Helm charts used by the applications
 
-2. Example: Helm values (values_dev.yaml)
+
+### 2. Example: Helm values (values_dev.yaml)
 
 ```
 # Dev Override Values for my Helm Chart
@@ -253,9 +254,9 @@ HelmCharts/ – Helm charts used by these applications
 container:
     image: nginx:1.27-alpine
 
-    replicaCount: 4
+replicaCount: 4
 
-    service:
+service:
     type: NodePort
     port: 80
     targetPort: 80
@@ -264,162 +265,172 @@ container:
 ```
 
 
-3. Example: app1.yaml (dev)
+### 3. Example: Application definition (app1.yaml, dev)
 
 ```
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-name: myapp1
-namespace: argocd-dev
-finalizers:
-    - resources-finalizer.argocd.argoproj.io
+    name: myapp1
+    namespace: argocd-dev
+    finalizers:
+        - resources-finalizer.argocd.argoproj.io
 spec:
-destination:
-    name: in-cluster
-    namespace: app1
-source:
-    repoURL: "https://github.com/plavez/argocd.git"
-    path: "HelmCharts/MyChart1"
-    targetRevision: main
-    helm:
-    valueFiles:
-        - values_dev.yaml
-    parameters:
-        - name: "container.image"
-        value: nginx:1.27-alpine
+    destination:
+        name: in-cluster
+        namespace: app1
+    source:
+        repoURL: "https://github.com/plavez/argocd.git"
+        path: "HelmCharts/MyChart1"
+        targetRevision: main
+        helm:
+            valueFiles:
+                - values_dev.yaml
+            parameters:
+                - name: "container.image"
+                  value: nginx:1.27-alpine
 project: default
 syncPolicy:
-    automated:
+  automated:
     prune: true
     selfHeal: true
-    syncOptions:
+  syncOptions:
     - CreateNamespace=true
 ```
 
-app2.yaml is identical except for name, namespace and chart path (MyChart2).
+app2.yaml is identical except for:
+
+- application name
+
+- target namespace
+
+- Helm chart path (MyChart2)
 
 
-4. Root Application in Git (dev/applications/root.yaml)
+### 4. Root Application in Git
+dev/applications/root.yaml
+
 ```
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-name: root
-namespace: argocd-dev
-finalizers:
+  name: root
+  namespace: argocd-dev
+  finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-destination:
+  destination:
     name: in-cluster
     namespace: argocd-dev
-source:
+  source:
     repoURL: "https://github.com/plavez/argocd.git"
     path: "dev/applications"
     targetRevision: main
-project: default
-syncPolicy:
+  project: default
+  syncPolicy:
     automated:
-    prune: true
-    selfHeal: true
+      prune: true
+      selfHeal: true
 
 ```
-The prod root application is the same, but uses:
+The prod root application is identical, except for:
 
-namespace: argocd-prod
+- namespace: argocd-prod
 
-path: "prod/applications"
+- path: "prod/applications"
 
 
-5. Terraform Module terraform_argocd_root_eks
-**This module applies a Root Application manifest to the cluster via kubernetes_manifest:**
+### 5. Terraform Module terraform_argocd_root_eks
+**This module applies a Root Application manifest to the cluster using kubernetes_manifest**
 ```
 variable "kubeconfig_path"      { type = string }
 variable "git_source_repoURL"   { type = string }
 variable "git_source_path"      { type = string }
 variable "git_source_targetRevision" {
-type    = string
-default = "main"
+    type    = string
+    default = "main"
 }
 
 provider "kubernetes" {
-config_path = var.kubeconfig_path
+    config_path = var.kubeconfig_path
 }
 
 resource "kubernetes_manifest" "argocd_root" {
-manifest = yamldecode(templatefile("${path.module}/root.yaml", {
-    repoURL        = var.git_source_repoURL
-    path           = var.git_source_path
-    targetRevision = var.git_source_targetRevision
-}))
+  manifest = yamldecode(
+    templatefile("${path.module}/root.yaml", {
+      repoURL        = var.git_source_repoURL
+      path           = var.git_source_path
+      targetRevision = var.git_source_targetRevision
+    })
+  )
 }
 ```
 
 
-6. Wiring it in deploy_argocd.tf
-**In deploy_argocd.tf we create two root modules:**
+### 6. Wiring Root Applications in deploy_argocd.tf
+**Two root modules are defined: one for dev, one for prod**
 ```
 # Root for DEV
 module "argocd_dev_root" {
-source          = "./terraform_argocd_root_eks"
-kubeconfig_path = pathexpand("~/.kube/dev-k3s.yaml")
+  source          = "./terraform_argocd_root_eks"
+  kubeconfig_path = pathexpand("~/.kube/dev-k3s.yaml")
 
-git_source_path          = "dev/applications"
-git_source_repoURL       = "https://github.com/plavez/argocd.git"
-git_source_targetRevision = "main"
+  git_source_path          = "dev/applications"
+  git_source_repoURL       = "https://github.com/plavez/argocd.git"
+  git_source_targetRevision = "main"
 
-# Can be enabled if you want strict ordering:
-# depends_on = [module.argocd_dev]
+  # Optional strict ordering::
+  # depends_on = [module.argocd_dev]
 }
 
-# Root for PROD
+# Root Application for PROD
 module "argocd_prod_root" {
-source          = "./terraform_argocd_root_eks"
-kubeconfig_path = pathexpand("~/.kube/prod-k3s.yaml")
+  source          = "./terraform_argocd_root_eks"
+  kubeconfig_path = pathexpand("~/.kube/prod-k3s.yaml")
 
-git_source_path          = "prod/applications"
-git_source_repoURL       = "https://github.com/plavez/argocd.git"
-git_source_targetRevision = "main"
+  git_source_path          = "prod/applications"
+  git_source_repoURL       = "https://github.com/plavez/argocd.git"
+  git_source_targetRevision = "main"
 
-# depends_on = [module.argocd_prod]
+  # depends_on = [module.argocd_prod]
 }
 
 ```
 
-7. Deploying Applications (Stage 2)
+### 7. Deploying Applications (Stage 2)
 
-**From ~/datascientest-main-project/main-project:**
+**From the main project directory  ~/datascientest-main-project/main-project, run**
 ```
 terraform plan
 terraform apply
 
 ```
-Now Terraform will:
+Terraform will:
 
-Confirm Argo CD Helm releases (dev & prod)
+- verify existing Argo CD Helm releases (dev and prod)
+- create Root Application resources in both clusters
 
-Create Root Application in each cluster (argocd_dev_root / argocd_prod_root)
+Argo CD will then:
 
-Argo CD will:
+- read the Git repository plavez/argocd
+- load application manifests from:
+  - dev/applications
+  - prod/applications
+- create child Application resources (myapp1, myapp2, etc.)
+- deploy Helm charts (MyChart1, MyChart2) into the clusters
 
-read your Git repo plavez/argocd
 
-load all application manifests from dev/applications and prod/applications
+### 8. Verifying Applications
+Kubernetes level
 
-create child Application resources (myapp1, myapp2, etc.)
-
-deploy Helm charts MyChart1, MyChart2 into clusters
-
-8. Verifying Applications
-    In Kubernetes
-**Dev:**
+**Dev cluster:**
 ```
 export KUBECONFIG=~/.kube/dev-k3s.yaml
 kubectl get applications.argoproj.io -A
 kubectl get pods -A
 
 ```
-**Prod:**
+**Prod cluster:**
 ```
 export KUBECONFIG=~/.kube/prod-k3s.yaml
 kubectl get applications.argoproj.io -A
@@ -428,29 +439,27 @@ kubectl get pods -A
 
 You should see:
 
-Application resources myapp1, myapp2, root
+- Application resources: root, myapp1, myapp2
+- corresponding pods running in namespaces app1, app2, etc.
 
-Corresponding pods in namespaces app1, app2, etc.
+Argo CD UI
+Log in to the Argo CD UI (dev and prod clusters).
 
-In Argo CD UI
+You should see the following applications:
 
-Log in to Argo CD UI (dev and prod)
+- root
 
-You should see tiles:
+- myapp1
 
-root
+- myapp2
 
-myapp1
-
-myapp2
-
-All of them should be in state Healthy and Synced.
+All applications should be in the Healthy and Synced state.
 
 ---
 
 ## Destroying the Environment
 
-1. Destroy Only Applications and Argo CD
+### 1. Destroy Only Applications and Argo CD
 **From main project directory:**
 
 ```
@@ -458,38 +467,48 @@ terraform destroy
 ```
 This will:
 
-remove root Application resources
+- remove root Application resources
 
-remove all child Argo CD applications (myapp1, myapp2, etc.)
+- remove all child Argo CD applications (myapp1, myapp2, etc.)
 
-uninstall Argo CD Helm releases
+- uninstall Argo CD Helm releases
 
-keep your k3s clusters (EC2 instances) intact
+- keep your k3s clusters (EC2 instances) intact
 
-**If you encounter finalizer issues, you can manually remove them, for example:**
+**If you encounter finalizer issues, you can manually remove them, for the dev cluster:**
 ```
 export KUBECONFIG=~/.kube/dev-k3s.yaml
+
 kubectl patch application root -n argocd-dev \
 -p '{"metadata":{"finalizers":[]}}' --type=merge
 
 ```
+Repeat the same procedure for the prod cluster if required.
 
-2. Destroy Clusters
+### 2. Destroy Clusters
 **From your k3s infrastructure Terraform directory (~/k3s-aws):**
 ```
 terraform destroy
 
 ```
-This will delete all EC2 instances and therefore remove both k3s clusters completely.
+This will:
+
+- delete all EC2 instances
+
+- completely remove both k3s clusters (dev and prod)
 
 ---
 
 ## Summary
 
 This documentation describes:
-How k3s clusters are provisioned on AWS EC2 using Terraform
-How Argo CD is installed into both dev and prod clusters using Helm via Terraform
-How applications are deployed using the App-of-Apps pattern:
-Root Application managed by Terraform (kubernetes_manifest)
-Child Applications managed by Argo CD from a Git repository
-How to verify and how to properly destroy all resources
+- how k3s clusters are provisioned on AWS EC2 using Terraform
+
+- how Argo CD is installed into both dev and prod clusters using Helm via Terraform
+
+- how applications are deployed using the App-of-Apps pattern:
+    - Root Application managed by Terraform (kubernetes_manifest)
+    - child Applications managed by Argo CD from a Git repository
+
+- how to verify the deployment
+- how to properly and safely destroy all resources
