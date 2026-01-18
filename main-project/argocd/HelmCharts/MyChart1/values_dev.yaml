@@ -3,7 +3,7 @@
 container:
   image: nginx:1.27-alpine
 
-replicaCount: 6
+replicaCount: 9
 
 service:
   type: NodePort
