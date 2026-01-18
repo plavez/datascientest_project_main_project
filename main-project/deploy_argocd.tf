@@ -22,7 +22,7 @@ module "argocd_dev_root" {
   kubeconfig_path = pathexpand("~/.kube/dev-k3s.yaml")
 
   git_source_path           = "dev/applications"
-  git_source_repoURL        = "https://github.com/plavez/argocd.git"
+  git_source_repoURL        = "https://github.com/plavez/datascientest_project_main_project.git"
   git_source_targetRevision = "main"
 }
 
@@ -33,6 +33,6 @@ module "argocd_prod_root" {
   kubeconfig_path = pathexpand("~/.kube/prod-k3s.yaml")
 
   git_source_path           = "prod/applications"
-  git_source_repoURL        = "https://github.com/plavez/argocd.git"
+  git_source_repoURL        = "https://github.com/plavez/datascientest_project_main_project.git"
   git_source_targetRevision = "main"
 }
