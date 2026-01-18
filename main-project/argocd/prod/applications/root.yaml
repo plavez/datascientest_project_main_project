@@ -11,7 +11,7 @@ spec:
     namespace: argocd
   source:
     path   : "argocd/prod/applications"
-    repoURL: "https://github.com/plavez/argocd.git"
+    repoURL: "https://github.com/plavez/datascientest_project_main_project.git"
     targetRevision: main
   project: default
   syncPolicy:
